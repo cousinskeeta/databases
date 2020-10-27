@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang = "en">
+   <head>
+      <style>
+         /* Split the screen in half */
+         .split {
+         height: 100%;
+         width: 50%;
+         position: fixed;
+         z-index: 1;
+         top: 0;
+         overflow-x: hidden;
+         padding-top: 20px;
+         }
+         
+         /* Control the left side */
+         .left {
+         left: 0;
+         background-color: green;
+         }
+         
+         /* Control the right side */
+         .right {
+         right: 0;
+         background-color: red;
+         }
+         
+         /* If you want the content centered horizontally and vertically */
+         .centered {
+         position: absolute;
+         top: 50%;
+         left: 50%;
+         transform: translate(-50%, -50%);
+         text-align: center;
+         }
+         
+         /* Style the table inside the centered container, if needed */
+         .centered table, th, td {
+         width: 150px;
+         border: 1px solid black;
+         width: 50%;
+         height: 100%;
+         text-align: left;
+			font-size: 100%;
+         }
+         td {
+				height: 50%;
+				vertical-align: bottom;
+				padding: 1.5px;
+				}
+         th, td {
+				border-bottom: 1px solid grey;
+			}
+         tr:hover {background-color: lightgrey;}
+
+         th {
+				background-color: black;
+				color: white;
+				}
+         h1 {
+				text-align: center;
+				font-size: 30;
+				color: black;
+      </style>
+   </head>
+   <body>
+
+      <hr/>
+      <div class = "split left">
+         <div class="centered">
+            {%- for message in get_flashed_messages() %}
+               {{ message }}
+            {%- endfor %}
+            <h1><a href = "{{ url_for('show_all') }}">Issues for the Black Agenda</a></h1>
+            <h3>All Issues (<a href = "{{ url_for('new') }}">Add Yours
+               </a>)</h3>
+            
+            <table>
+               <thead>
+                  <tr>
+                     <th>Date</th>
+                     <th>Issue #1</th>
+                     <th>Issue #2</th>
+                     <th>Issue #3</th>
+                     <th>Zipcode</th>
+                  </tr>
+               </thead>
+               
+               <tbody>
+                  {% for issue in idb %}
+                     <tr>
+                        <td>{{ issue.date }}</td>
+                        <td>{{ issue.issue1 }}</td>
+                        <td>{{ issue.issue2 }}</td>
+                        <td>{{ issue.issue3 }}</td>
+                        <td>{{ issue.zipcode }}</td>
+                     </tr>
+                  {% endfor %}
+               </tbody>
+            </table>
+         </div>
+      </div>
+
+      <hr/>
+      <div class = "split right">
+         <div class="centered">
+            {%- for message in get_flashed_messages() %}
+               {{ message }}
+            {%- endfor %}
+            <h1><a href = "{{ url_for('org') }}">Organizations for the Black Agenda</a></h1>
+            <h3>All Organizations (<a href = "{{ url_for('new_org') }}">Add Yours
+            </a>)</h3>
+         
+            <table>
+               <thead>
+                  <tr>
+                     <th>Company</th>
+                     <th>Contact</th>
+                     <th>Email</th>
+                     <th>Website</th>
+                     <th>Zipcode</th>
+                  </tr>
+               </thead>
+               
+               <tbody>
+                  {% for org in orgs_ %}
+                     <tr>
+                        <td>{{ org.company }}</td>
+                        <td>{{ org.contact }}</td>
+                        <td>{{ org.email }}</td>
+                        <td>{{ org.website }}</td>
+                        <td>{{ org.zipcode }}</td>
+                     </tr>
+                  {% endfor %}
+               </tbody>
+            </table>
+         </div>
+      </div>
+   </body>
+</html>
