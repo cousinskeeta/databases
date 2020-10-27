@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang = "en">
+   <head></head>
+   <body>
+      
+      <h3>
+         <a href = "{{ url_for('org') }}">Organizations for the Black Agenda</a>
+         <a href = "{{ url_for('show_all') }}">Issues for the Black Agenda</a>
+      </h3>
+      
+      <hr/>
+      {%- for message in get_flashed_messages() %}
+         {{ message }}
+      {%- endfor %}
+		
+      <h3>All Organizations (<a href = "{{ url_for('new_org') }}">Add Yours
+         </a>)</h3>
+      
+      <table>
+         <thead>
+            <tr>
+               <th>Company</th>
+               <th>Contact</th>
+               <th>Email</th>
+               <th>Website</th>
+               <th>Zipcode</th>
+            </tr>
+         </thead>
+         
+         <tbody>
+            {% for org in orgs_ %}
+               <tr>
+                  <td>{{ org.company }}</td>
+                  <td>{{ org.contact }}</td>
+                  <td>{{ org.email }}</td>
+                  <td>{{ org.website }}</td>
+                  <td>{{ org.zipcode }}</td>
+               </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+      
+   </body>
+</html>
