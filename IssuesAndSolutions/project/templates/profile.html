@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title">
+  Welcome, {{ name }}!
+</h1>
+<div class="container">
+  <h3 class="title">Add your thoughts!</h3>
+  <div class="box">
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+          <div class="notification is-danger">
+              {{ messages[0] }}
+          </div>
+      {% endif %}
+      {% endwith %}
+      <form method="POST" action="/create_post">
+              <div class="control">
+                  <input class="input is-large" type="text" name="title" placeholder="Name one Local Issue" autofocus="">
+              </div>
+              <div class="control">
+                  <input class="input is-large" type="text" name="body" placeholder="Share your solution">
+              </div>
+          <button class="button is-block is-info is-large is-fullwidth">Post</button>
+      </form>
+  </div>
+</div>
+<div class="section">
+  {% for post in usr_posts %}
+  <div class='container'>
+    <div class='card'>
+      <header class="card-header">
+        <p class="card-header-title">
+          {{ Likes.query.filter_by(post_id=post.id).count() }} - UP Votes <br>
+          {{ Dislikes.query.filter_by(post_id=post.id).count() }} - DOWN Votes 
+        </p>
+      </header>
+      <div class='card-content'>
+        <h1 class='title' style='color:black'> {{ post.title }} </h1>
+        <p class='subtitle' style='color:black'> {{ post.body }} </p>
+      </div>
+      <footer class='card-footer-item'>
+        <span style='color:black'>
+          Posted on {{ post.create_dttm.date() }} by {{ name }} &nbsp;&nbsp;<br>  
+        </span>
+        <br>
+        <form action="{{ url_for('main.like_post') }}", method="POST">
+            <button class="button is-primary" type="submit" >
+                <input type="hidden" id="post_id" name="post_id" value= {{ post.id }}>
+                <span class="arrow-top-thick"></span>UPVOTE
+            </button>
+        </form>
+        <br>&nbsp;&nbsp;<br>
+        <form action="{{ url_for('main.dislike_post') }}", method="POST">
+            <button class="button is-primary" type="submit" >
+                <input type="hidden" id="post_id" name="post_id" value= {{ post.id }}>
+                <span class="arrow-top-thick"></span>DOWNVOTE
+            </button>
+        </form>
+      </footer>
+  </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
