@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title">
+  Discover Solutions for Issues
+</h1>
+{% if current_user.is_authenticated %}
+{% for post in all_posts %}
+<div class='container'>
+    <div class='card'>
+      <header class="card-header">
+        <p class="card-header-title">
+          {{ Likes.query.filter_by(post_id=post.id).count() }} - UP Votes <br>
+          {{ Dislikes.query.filter_by(post_id=post.id).count() }} - DOWN Votes 
+        </p>
+      </header>
+      <div class='card-content'>
+        <h1 class='title' style='color:darkorange'> {{ post.title }} </h1>
+        <p class='subtitle' style='color:black'> {{ post.body }} </p>
+      </div>
+      <footer class='card-footer-item'>
+        <span style='color:black'>
+          Posted on {{ post.create_dttm.date() }} by {{ post.author }}  &nbsp;&nbsp;
+        </span>
+        <br>
+        <form action="{{ url_for('main.like_post') }}", method="POST">
+            <button class="button is-primary" type="submit">
+                <input type="hidden" id="post_id" name="post_id" value= {{ post.id }}>
+                <span class="arrow-top-thick"></span>UPVOTE
+            </button>
+        </form>
+        <br>&nbsp;&nbsp;<br>
+        <form action="{{ url_for('main.dislike_post') }}", method="POST">
+            <button class="button is-primary" type="submit" >
+                <input type="hidden" id="post_id" name="post_id" value= {{ post.id }}>
+                <span class="arrow-top-thick"></span>DOWNVOTE
+            </button>
+        </form>
+      </footer>
+  </div>
+  </div>
+{% endfor %}
+{% endif %}
+
+{% endblock %}
