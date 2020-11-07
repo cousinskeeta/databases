@@ -52,3 +52,12 @@ class Dislikes(db.Model):
 	create_dttm = db.Column(db.DateTime, default= datetime.utcnow)
 	users = db.relationship(User, backref='dislikes-by-user', foreign_keys=[user_id])
 	posts = db.relationship(Post, backref='dislikes-by-post', foreign_keys=[post_id])
+
+class Comments(db.Model):
+	__tablename__ = 'comments'
+	__table_args__ = {'extend_existing': True} 
+	id = db.Column(db.Integer, primary_key=True)
+	body = db.Column(db.Text, nullable=False)
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+	post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+	create_dttm = db.Column(db.DateTime, default= datetime.utcnow)
