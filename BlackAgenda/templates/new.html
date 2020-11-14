@@ -2,7 +2,7 @@
 <html>
    <body>
    
-      <h3>Issues in Black America</h3>
+      <h3>Issues for the Black Agenda</h3>
       <hr/>
       
       {%- for category, message in get_flashed_messages(with_categories = true) %}
@@ -15,13 +15,15 @@
          <label for = "zipcode">Zipcode</label><br>
          <input type = "text" name = "zipcode" placeholder = "Zipcode" /><br>
          <label for = "issue1">Issue1</label><br>
-         <input type = "text" name = "issue1" placeholder = "issue1" /><br>
+         <textarea name = "issue1" placeholder = "issue1"></textarea><br>
          <label for = "issue2">Issue2</label><br>
          <textarea name = "issue2" placeholder = "issue2"></textarea><br>
          <label for = "issue3">Issue3</label><br>
-         <input type = "text" name = "issue3" placeholder = "issue3" /><br>
+         <textarea name = "issue3" placeholder = "issue3"></textarea><br>
          <input type = "submit" value = "Submit" />
       </form>
-      
+      <br>
+      <br>
+      <a href = "{{ url_for('show_all') }}">Issues for the Black Agenda</a>
    </body>
 </html>
