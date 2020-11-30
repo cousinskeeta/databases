@@ -14,13 +14,15 @@
         <form method="POST" action="/create_post">
             <input type="hidden" id="user_id" name="user_id" value= {{ user_id }}>
                 <div class="control">
-                    <input class="input is-large" type="text" name="title" placeholder="Name one Local Issue" autofocus="">
+                    <textarea class="input is-large" type="text" name="title" placeholder="Name one Local Issue" autofocus="">
                 </div>
             </div>
 
             <div class="field">
                 <div class="control">
-                    <textinput class="input is-large" name="body" placeholder="Share your solution">
+                    <textinput class="input is-large" name="body" placeholder="Share your solution here" rows="10" cols="50">
+                        Share your solution here
+                      </textarea>
                 </div>
             </div>
             <button class="button is-block is-info is-large is-fullwidth">Post</button>
