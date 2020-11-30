@@ -5,7 +5,7 @@
   Discover Solutions for Issues
 </h1>
 {% if current_user.is_authenticated %}
-{% for post in all_posts %}
+<!-- {% for post in all_posts %}
 <div class='container'>
     <div class='card'>
       <header class="card-header">
@@ -40,6 +40,127 @@
   </div>
   </div>
 {% endfor %}
-{% endif %}
+{% endif %} -->
+
+<div class="box">
+  {% for post in all_posts %}
+
+  <article class="media">
+      <figure class="media-left">
+        <form method="POST" action="{{ url_for('main.delete_post') }}"> 
+          <input type="hidden" id="post_id" name="post_id" value="{{ post.id }}"></input>
+        <button type="submit"  class="delete is-large"> </button>
+      </form>
+      <div class="media-content">
+        <div class="content">
+          <p>
+
+            {% if current.id == post.user_id %}
+            <small> <a href="{{ url_for('main.post', id=post.id) }}"> EDIT </a> </small>
+            {% endif %}
+
+            <strong>{{ post.author }}'s </strong> thought's on 
+            <strong>{{ post.title }}</strong> from {{ post.create_dttm.date() }}:
+
+            <br>
+            <p>
+              {{ post.body }}
+            </p>
+          </p>
+          <article class="media">
+              <form action="{{ url_for('main.like_post') }}", method="POST">
+                  <button type="submit" >
+                      <input type="hidden" id="post_id" name="post_id" value= {{ post.id }} >
+                      <figure class="media-left">
+                        <p class="image is-32x32">
+                          <img src="https://cdn.emojidex.com/emoji/px128/reversed_thumbs_up_sign%28bk%29.png?1426441280">
+                        </p><small><a>{{ Likes.query.filter_by(post_id=post.id).count() }} - up</a> </small>
+                      </figure>
+                  </button>
+              </form>
+              <br>  &nbsp; <br>
+              <form action="{{ url_for('main.dislike_post') }}", method="POST">
+                  <button type="submit" >
+                      <input type="hidden" id="post_id" name="post_id" value= {{ post.id }}>
+                      <figure class="media-right">
+                        <p class="image is-32x32">
+                          <img src="https://cdn.joypixels.com/emoji/joypixels/6.0/png/unicode/128/1f44e-1f3ff.png">
+                        </p><small><a>{{ Dislikes.query.filter_by(post_id=post.id).count() }} - down</a> </small>
+                      </figure>
+                  </button>
+              </form>
+          </article>
+        </div>
+        {% for comment in Comments.query.filter_by(post_id=post.id).order_by(Comments.create_dttm.desc()) %}
+  
+        <article class="media">
+          <figure class="media-left">
+            <form method="POST" action="{{ url_for('main.delete_comment') }}"> 
+              <input type="hidden" id="comment_id" name="comment_id" value="{{ comment.id }}"></input>
+            <button type="submit"  class="delete"> </button>
+          </form>
+          </figure>
+          <div class="media-content">
+            <div class="content">
+              <article class="media">
+                <figure class="media-left">
+                  <p class="image is-16x16">
+                    <img src="https://images-na.ssl-images-amazon.com/images/I/41hBGDoF8eL._AC_.jpg">
+                  </p>
+                </figure>
+                <div class="media-content">
+                  <div class="content">
+                    <p>
+                      <strong>
+                        {% for user in Users.query.filter_by(id=comment.user_id) %}
+                        By {{user.name}}
+                        {% endfor %}
+                      </strong>
+                      <br>
+                      <article>
+                      {{ comment.body }}
+                    </article>
+                      <br>
+                      <small><a>Posted on {{ comment.create_dttm.date() }}</small>
+                    </p>
+                  </div>
+                </div>
+              </article>  
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </article>
+    <form action="{{ url_for('main.comment') }}", method="POST">
+    <article class="media">
+      <figure class="media-left">
+        <p class="image is-64x64">
+          <img src="https://cdn.iconscout.com/icon/free/png-256/comment-2551199-2136583.png">
+        </p>
+      </figure>
+      <div class="media-content">
+        <div class="field">
+          <p class="control">
+                  <textarea class="textarea is-info" id="body" name="body" rows="1" placeholder="Share your thoughts">
+                  </textarea>
+                  <input type="hidden" id="post_id" name="post_id" value= {{ post.id }}>
+                  
+          </p>
+        </div>
+        <div class="field">
+          <p class="control">
+              <button class="button is-primary is-light is-inverted is-block is-info is-large" type="submit" >
+                  <span class="subtitle"></span>Post comment
+                </button>
+          </p>
+        </div>
+      </div>
+    </article>
+  </form><br>
+  
+  {% endfor %}
+  
+</div>
 
 {% endblock %}
