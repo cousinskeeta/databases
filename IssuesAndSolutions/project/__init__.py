@@ -11,12 +11,30 @@ migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
-    db_path = os.path.join(os.path.dirname(__file__), 'db.sqlite')
-    db_uri = 'sqlite:///{}'.format(db_path)
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+    db_path = os.path.join(os.path.dirname(__file__), 'db2.sqlite')
+    sqlite_db_uri = 'sqlite:///{}'.format(db_path)
+
+    ## Set up MySQL server on AWS or HEROKU update with new table
+    db_username = "username"
+    db_pass     = "pass"
+    db_host     = "host"
+    db_db       = "database"
+    mysql_db_uri = "mysql+pymysql://{}:{}@{}/{}".format(db_username, db_pass, db_host, db_db) 
+
+    # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
+
+    ## Setting up AWS RDS MySQL database service
+    db2_username = "username"
+    db2_pass = "pass"
+    db2_host = "host"
+    db2_db = "databse"
+    AWS_mysql_db_uri = "mysql+pymysql://{}:{}@{}/{}".format(db2_username, db2_pass, db2_host, db2_db)
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = AWS_mysql_db_uri or mysql_db_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = 'secret-key-goes-here'
-    # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
+    app.config['DEBUG'] = True
+    app.config['SQLALCHEMY_POOL_RECYCLE']=90
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -41,3 +59,5 @@ def create_app():
     app.register_blueprint(main_blueprint)
 
     return app
+
+from . import errors
