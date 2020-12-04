@@ -42,8 +42,8 @@
 {% endfor %}
 {% endif %} -->
 
-<div class="box">
   {% for post in all_posts %}
+  <div class="box">
 
   <article class="media">
       <figure class="media-left">
@@ -59,18 +59,28 @@
             </form>
             <small> <a href="{{ url_for('main.post', id=post.id) }}"> EDIT </a> </small>
             {% endif %}
-
+            <br>
+            <p class="image is-128x128">
+              {% for user in Users.query.filter_by(id=post.user_id) %}
+                {% if user.image != "" %}
+                  <img class="image is-128x128" src="{{user.image}}"> 
+                {% else %}
+                <img class="image is-128x128" src="https://images-na.ssl-images-amazon.com/images/I/41hBGDoF8eL._AC_.jpg"> 
+                  {% endif %}
+              {% endfor %}            
+            </p>
+            <br>
             <div class="is-primary">{{ post.author }}'s </div> thought's on: <br>
             <strong clsss="is-danger">{{ post.title }}</strong> 
             <br> <small><i>from {{ post.create_dttm.date() }}</i></small>
           </article>
-<br>
+          <br>
           <article class="media">
             <form action="{{ url_for('main.like_post') }}", method="POST">
-                <button type="submit" >
+                <button class="button is-small is-primary is-outlined" type="submit" style="background-image: url('https://cdn.emojidex.com/emoji/px128/reversed_thumbs_up_sign%28bk%29.png?1426441280');">
                     <input type="hidden" id="post_id" name="post_id" value= {{ post.id }} >
                     <figure class="media-left">
-                      <p class="image is-32x32">
+                      <p class="image is-16x16">
                         <img src="https://cdn.emojidex.com/emoji/px128/reversed_thumbs_up_sign%28bk%29.png?1426441280">
                       </p><small><a>{{ Likes.query.filter_by(post_id=post.id).count() }} - up</a> </small>
                     </figure>
@@ -78,10 +88,10 @@
             </form>
             <br>  &nbsp; <br>
             <form action="{{ url_for('main.dislike_post') }}", method="POST">
-                <button type="submit" >
+                <button class="button is-small is-danger is-outlined" type="submit" >
                     <input type="hidden" id="post_id" name="post_id" value= {{ post.id }}>
                     <figure class="media-right">
-                      <p class="image is-32x32">
+                      <p class="image is-16x16">
                         <img src="https://cdn.joypixels.com/emoji/joypixels/6.0/png/unicode/128/1f44e-1f3ff.png">
                       </p><small><a>{{ Dislikes.query.filter_by(post_id=post.id).count() }} - down</a> </small>
                     </figure>
@@ -93,10 +103,8 @@
             <article class="content is-medium" style="word-break: normal;">
               {{ post.body }}
             </article>
-
-        </div>
+  </article>
         {% for comment in Comments.query.filter_by(post_id=post.id).order_by(Comments.create_dttm.desc()) %}
-      <div class="box collapse">
         <article class="media">
           <figure class="media-left">
             {% if current.id == comment.user_id %}
@@ -110,16 +118,21 @@
           <div class="media-content">
             <div class="content">
               <article class="media">
+                {% for user in Users.query.filter_by(id=comment.user_id) %}
+
                 <figure class="media-left">
-                  <p class="image is-16x16">
-                    <img src="https://images-na.ssl-images-amazon.com/images/I/41hBGDoF8eL._AC_.jpg">
-                  </p>
+                  <p class="image is-64x64">
+                    {% if user.image != "" %}
+                      <img class="image is-64x64" src="{{user.image}}"> 
+                    {% else %}
+                    <img class="image is-64x64x" src="https://images-na.ssl-images-amazon.com/images/I/41hBGDoF8eL._AC_.jpg"> 
+                      {% endif %}
+                </p>
                 </figure>
                 <div class="media-content">
                   <div class="content">
                     <p>
                       <strong>
-                        {% for user in Users.query.filter_by(id=comment.user_id) %}
                         By {{user.name}}
                         {% endfor %}
                       </strong>
@@ -136,11 +149,10 @@
             </div>
           </div>
         </article>
-      </div>
-        {% endfor %}
+          {% endfor %}
 
-      </div>
-    </article>
+
+
     <form action="{{ url_for('main.comment') }}", method="POST">
     <article class="media">
       <figure class="media-left">
@@ -167,9 +179,10 @@
       </div>
     </article>
   </form><br>
-  
-  {% endfor %}
-  
 </div>
+
+  {% endfor %}
+</div>
+
 
 {% endblock %}
