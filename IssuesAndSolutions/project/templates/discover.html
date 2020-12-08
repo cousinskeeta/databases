@@ -77,7 +77,7 @@
           <br>
           <article class="media">
             <form action="{{ url_for('main.like_post') }}", method="POST">
-                <button class="button is-small is-primary is-outlined" type="submit" style="background-image: url('https://cdn.emojidex.com/emoji/px128/reversed_thumbs_up_sign%28bk%29.png?1426441280');">
+                <button class="button is-small is-primary is-outlined" type="submit">
                     <input type="hidden" id="post_id" name="post_id" value= {{ post.id }} >
                     <figure class="media-left">
                       <p class="image is-16x16">
@@ -112,7 +112,6 @@
               <input type="hidden" id="post_id" name="post_id" value="{{ post.id }}"></input>
             <button type="submit"  class="delete is-large"> </button>
             </form>
-            <small> <a href="{{ url_for('main.post', id=post.id) }}"> EDIT </a> </small>
             {% endif %}
           </figure>
           <div class="media-content">
