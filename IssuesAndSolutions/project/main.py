@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-from flask_login import login_required, current_user
+# from flask_login import login_required, current_user
+from flask_security import Blueprint, login_required, current_user
 from .models import Post, User, Likes, Dislikes, Comments
 from . import db
 
@@ -17,7 +18,8 @@ def profile():
 	except:
 		user_posts = ""
 
-	return render_template('profile.html', current =current_user, user_id = current_user.id, usr_posts=user_posts, Likes=Likes, Dislikes=Dislikes, Comments = Comments, Users=User, all_posts = Post)
+	return render_template('profile.html', current =current_user, user_id = current_user.id, 
+	usr_posts=user_posts, Likes=Likes, Dislikes=Dislikes, Comments = Comments, Users=User, all_posts = Post)
 
 @main.route('/edit', methods=['GET','POST'])
 @login_required
@@ -154,10 +156,12 @@ def delete_post():
 @login_required
 def discover():
 	all_posts = Post.query.all()
-	return render_template('discover.html', all_posts = all_posts, Likes = Likes, Dislikes = Dislikes, current =current_user, user_id = current_user.id, Comments = Comments, Users=User)
+	return render_template('discover.html', all_posts = all_posts, Likes = Likes, Dislikes = Dislikes, 
+	current =current_user, user_id = current_user.id, Comments = Comments, Users=User)
 
 @main.route('/post/<id>', methods=['GET','POST'])
 @login_required
 def post(id):
 	posts = Post.query.filter_by(id=id).all()
-	return render_template('post.html', current =current_user, user_id = current_user.id, usr_posts=posts, Likes=Likes, Dislikes=Dislikes, Comments = Comments, Users=User, all_posts = Post)
+	return render_template('post.html', current =current_user, user_id = current_user.id, usr_posts=posts, 
+	Likes=Likes, Dislikes=Dislikes, Comments = Comments, Users=User, all_posts = Post)
