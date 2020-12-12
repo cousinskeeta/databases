@@ -1,22 +1,49 @@
-from flask_login import UserMixin
+# from flask_login import UserMixin
+from flask_security import UserMixin, RoleMixin
 from datetime import datetime
 from . import db
+
+roles_users = db.Table('roles_users', 
+db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+db.Column('role_id', db.Integer, db.ForeignKey('role.id')))
+
 
 class User(UserMixin, db.Model):
 	__tablename__ = 'user'
 	__table_args__ = {'extend_existing': True} 
 	id = db.Column(db.Integer, primary_key=True)
 	email = db.Column(db.String(100), unique=True)
+	confirmed_at = db.Column(db.DateTime())
 	password = db.Column(db.String(100), unique=True)
+	active = db.Column(db.Boolean)
 	name = db.Column(db.String(1000))
-	image = db.Column(db.Text, default="https://images-na.ssl-images-amazon.com/images/I/41hBGDoF8eL._AC_.jpg")
+	image = db.Column(db.Text, 
+		default="https://images-na.ssl-images-amazon.com/images/I/41hBGDoF8eL._AC_.jpg")
 	create_dttm = db.Column(db.DateTime, default= datetime.utcnow)
 	posts = db.relationship('Post', backref=db.backref('user', lazy='joined'), lazy=True)
+	roles = db.relationship('Role', secondary=roles_users, 
+		backref=db.backref('users',lazy='dynamic'))
+	last_login_at = db.Column(db.DateTime())
+	current_login_at = db.Column(db.DateTime())
+	last_login_ip = db.Column(db.DateTime())
+	current_login_ip = db.Column(db.DateTime())
+	login_count = db.Column(db.DateTime())
+	def get_security_payload(self):
+		return {
+			'id': self.id,
+			'name': self.name,
+			'email': self.email
+		}
 	def votes_(self):
 		votes_ = db.session.query(Votes).filter(Votes.candidate_id == User.id)
 		return votes_
 	def __repr__(self):
 		return '<User %r>' % self.email
+
+class Role(RoleMixin, db.Model):
+	id = db.Column(db.Integer ,primary_key=True)
+	name = db.Column(db.String(40))
+	description = db.Column(db.String(255))
 
 
 class Post(db.Model):
@@ -101,3 +128,5 @@ class Votes(db.Model):
 	voter_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	candidate = db.relationship(Candidates, backref='candidate-by-userid', foreign_keys=[candidate_id])
 	voter = db.relationship(User, backref='votes-by-user', foreign_keys=[voter_id])
+
+user_datastore = SQLAlchemyUserDatastore(db, User, Role)
