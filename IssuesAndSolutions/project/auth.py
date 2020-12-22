@@ -1,31 +1,44 @@
-from flask import render_template, redirect, url_for, request, flash # Blueprint
-# from werkzeug.security import generate_password_hash, check_password_hash
+from flask import render_template, redirect, url_for, request, flash, Blueprint
+from werkzeug.security import generate_password_hash, check_password_hash
 # from flask_login import login_user, logout_user, login_required
-from flask_security import, Blueprint, hash_password, login_required, login_user, logout_user, SQLAlchemyUserDatastore, ch
-from flask_security.utils import verify_password
+from flask_security import SQLAlchemyUserDatastore
+from flask_security.decorators import login_required
+from flask_security.utils import verify_password, hash_password, login_user, logout_user
+from flask_security.forms import LoginForm
 from .models import User, Role
 from . import db
 
 auth = Blueprint('auth', __name__)
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 
-@auth.route('/login')
+@auth.route('/login', methods=['GET', 'POST'])
 def login():
-	return render_template('login.html')
+	form = LoginForm()
+	if form.validate_on_submit():
+		login_user(user, remember=remember)	
+		flash("Logged in successfully")
+		return redirect(url_for('main.profile'))
+	return render_template('security/login_user.html', login_user_form=form)
 
-@auth.route('/login', methods=['POST'])
-def login_post():
-	email = request.form['email']
-	password = request.form['password']
-	remember = True if request.form.get('remember') else False
-	user = User.query.filter_by(email=email).first()
-	if not user or not verify_password(user.password)
-	if not user or not check_password_hash(password, user.password):
-		flash('Please check your login details and try again.')
-		return redirect(url_for('auth.login'))
 
-	login_user(user, remember=remember)	
-	return redirect(url_for('main.profile'))
+# @auth.route('/login', methods=['POST'])
+# def login_post():
+# 	email = request.form['email']
+# 	password = request.form['password']
+# 	print('submitted: ', password)
+# 	remember = True if request.form.get('remember') else False
+# 	user = User.query.filter_by(email=email).first()
+# 	print("from DB: ", user.password)
+# 	print("verify_password: ", verify_password(password, user.password))
+# 	print("pass_hash: ", generate_password_hash(password))
+# 	print("check_password_hash: ", check_password_hash(user.password, password))
+# 	if not user or not verify_password(password, user.password):
+# 		if not user or not check_password_hash(user.password,password):
+# 			flash('Please check your login details and try again.')
+# 			return redirect(url_for('auth.login'))
+
+# 	login_user(user, remember=remember)	
+# 	return redirect(url_for('main.profile'))
 
 @auth.route('/signup')
 def signup():
