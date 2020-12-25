@@ -1,33 +1,40 @@
 # from flask_login import UserMixin
-from flask_security import UserMixin, RoleMixin
+from flask_security import UserMixin, RoleMixin, SQLAlchemyUserDatastore
 from datetime import datetime
-from . import db
+from .__init__ import db
 
-roles_users = db.Table('roles_users', 
-db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-db.Column('role_id', db.Integer, db.ForeignKey('role.id')))
 
+class RolesUsers(db.Model):
+	__tablename__ = 'roles_users'
+	__table_args__ = {'extend_existing': True} 
+	id = db.Column(db.Integer, primary_key=True) 
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id')) 
+	role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
 
 class User(UserMixin, db.Model):
 	__tablename__ = 'user'
 	__table_args__ = {'extend_existing': True} 
 	id = db.Column(db.Integer, primary_key=True)
-	email = db.Column(db.String(100), unique=True)
-	confirmed_at = db.Column(db.DateTime())
-	password = db.Column(db.String(100), unique=True)
-	active = db.Column(db.Boolean)
+	email = db.Column(db.String(255), unique=True)
+	password = db.Column(db.String(255), unique=True)
 	name = db.Column(db.String(1000))
-	image = db.Column(db.Text, 
-		default="https://images-na.ssl-images-amazon.com/images/I/41hBGDoF8eL._AC_.jpg")
+	username = db.Column(db.String(255)) 
 	create_dttm = db.Column(db.DateTime, default= datetime.utcnow)
-	posts = db.relationship('Post', backref=db.backref('user', lazy='joined'), lazy=True)
-	roles = db.relationship('Role', secondary=roles_users, 
-		backref=db.backref('users',lazy='dynamic'))
+	image = db.Column(db.Text, 
+		default="https://images-na.ssl-images-amazon.com/images/I/41hBGDoF8eL._AC_.jpg")	
+	
+	confirmed_at = db.Column(db.DateTime())
+	active = db.Column(db.Boolean)
 	last_login_at = db.Column(db.DateTime())
 	current_login_at = db.Column(db.DateTime())
-	last_login_ip = db.Column(db.DateTime())
-	current_login_ip = db.Column(db.DateTime())
-	login_count = db.Column(db.DateTime())
+	last_login_ip = db.Column(db.String(100)) 
+	current_login_ip = db.Column(db.String(100)) 
+	login_count = db.Column(db.Integer) 
+
+	posts = db.relationship('Post', backref=db.backref('user', lazy='joined'), lazy=True)
+	roles = db.relationship('Role', secondary='roles_users', 
+		backref=db.backref('users',lazy='dynamic'))
+
 	def get_security_payload(self):
 		return {
 			'id': self.id,
@@ -37,11 +44,14 @@ class User(UserMixin, db.Model):
 	def votes_(self):
 		votes_ = db.session.query(Votes).filter(Votes.candidate_id == User.id)
 		return votes_
+
 	def __repr__(self):
 		return '<User %r>' % self.email
 
 class Role(RoleMixin, db.Model):
-	id = db.Column(db.Integer ,primary_key=True)
+	__tablename__ = 'role'
+	__table_args__ = {'extend_existing': True} 
+	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(40))
 	description = db.Column(db.String(255))
 
