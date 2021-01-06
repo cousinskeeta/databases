@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title">
+  {{ current.name }}
+</h1>
+
+
+<div class="box">
+  {% for post in usr_posts %}
+  <div class="container">
+    <h3 class="subtitle">Add your thoughts!</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+        {% endwith %}
+        <form method="POST" action="/update_post">
+                <div class="control">
+                  <input type="hidden" name="post_id" value="{{ post.id }}"></input>
+                    <input class="input is-medium is-info is-danger" type="text" name="title" value="{{ post.title }}"></input>
+                </div>
+                <br>
+                <div class="control">
+                    <textarea class="textarea is-info" name="body" value="{{ post.body }}"></textarea>
+                </div><br>
+            <button class="button is-block is-info is-medium">Update</button>
+        </form>
+    </div>
+  </div>
+
+        {% for comment in Comments.query.filter_by(post_id=post.id).order_by(Comments.create_dttm.desc()) %}
+  
+        <article class="media">
+          <figure class="media-left">
+            <form method="POST" action="{{ url_for('main.delete_comment') }}"> 
+              <input type="hidden" id="comment_id" name="comment_id" value="{{ comment.id }}"></input>
+            <button type="submit"  class="delete"> </button>
+          </form>
+          </figure>
+          <div class="media-content">
+            <div class="content">
+              <article class="media">
+                <figure class="media-left">
+                  <p class="image is-16x16">
+                    <img src="https://images-na.ssl-images-amazon.com/images/I/41hBGDoF8eL._AC_.jpg">
+                  </p>
+                </figure>
+                <div class="media-content">
+                  <div class="content">
+                    <p>
+                      <strong>
+                        {% for user in Users.query.filter_by(id=comment.user_id) %}
+                        By {{user.name}}
+                        {% endfor %}
+                      </strong>
+                      <br>
+                      {{ comment.body }}
+                      <br>
+                      <small><a>Posted on {{ comment.create_dttm.date() }}</small>
+                    </p>
+                  </div>
+                </div>
+              </article>  
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </article>
+    <form action="{{ url_for('main.comment') }}", method="POST">
+    <article class="media">
+      <figure class="media-left">
+        <p class="image is-64x64">
+          <img src="https://cdn.iconscout.com/icon/free/png-256/comment-2551199-2136583.png">
+        </p>
+      </figure>
+      <div class="media-content">
+        <div class="field">
+          <p class="control">
+                  <textarea class="textarea is-info" id="body" name="body" rows="1" placeholder="Share your thoughts">
+                  </textarea>
+                  <input type="hidden" id="post_id" name="post_id" value= {{ post.id }}>
+                  
+          </p>
+        </div>
+        <div class="field">
+          <p class="control">
+              <button class="button is-primary is-light is-inverted is-block is-info is-large" type="submit" >
+                  <span class="subtitle"></span>Post comment
+                </button>
+          </p>
+        </div>
+      </div>
+    </article>
+  </form><br>
+  
+  {% endfor %}
+  
+</div>
+{% endblock %}
