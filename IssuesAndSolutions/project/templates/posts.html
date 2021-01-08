@@ -1,0 +1,96 @@
+{% for post in usr_posts %}
+
+  <article class="media">
+      <figure class="media-left">
+        <p class="image is-64x64">
+          <img src="https://bulma.io/images/placeholders/128x128.png">
+        </p>
+      </figure>
+      <div class="media-content">
+        <div class="content">
+          <p>
+            <strong>{{ name }}</strong>
+            <br>
+            <strong>{{ post.title }}</strong>
+            <br>
+            <p>
+              {{ post.body }}
+            </p>
+            <br>
+            <small><a>{{ Likes.query.filter_by(post_id=post.id).count() }} - UP Votes</a> · <a>{{ Dislikes.query.filter_by(post_id=post.id).count() }} - DOWN Votes </a> · Posted on {{ post.create_dttm.date() }}</small>
+          </p>
+          <article class="media">
+              <form action="{{ url_for('main.like_post') }}", method="POST">
+                  <button class="button is-primary" type="submit" >
+                      <input type="hidden" id="post_id" name="post_id" value= {{ post.id }}>
+                      <span class="icon">
+                        <i class="arrow-top-thick"></i>
+                      </span>UPVOTE
+                  </button>
+              </form>
+              <br>  
+              <form action="{{ url_for('main.dislike_post') }}", method="POST">
+                  <button class="button is-primary" type="submit" >
+                      <input type="hidden" id="post_id" name="post_id" value= {{ post.id }}>
+                      <span class="icon">
+                        <i class="arrow-top-thick"></i>
+                      </span>DOWNVOTE
+                  </button>
+              </form>
+          </article>
+        </div>
+        {% for comment in Comments.query.filter_by(post_id=post.id).order_by(Comments.create_dttm.desc()) %}
+  
+        <article class="media">
+          <figure class="media-left">
+            <p class="image is-48x48">
+              <img src="https://bulma.io/images/placeholders/96x96.png">
+            </p>
+          </figure>
+          <div class="media-content">
+            <div class="content">
+              <p>
+                <strong>
+                  {% for user in Users.query.filter_by(id=comment.user_id) %}
+                  By {{user.name}} -   {{ comment.create_dttm.date() }}
+                  {% endfor %}
+                </strong>
+                <br>
+                {{ comment.body }}
+                <br>
+                <small><a>Posted on {{ post.create_dttm.date() }}</small>
+              </p>
+              
+            </div>  
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </article>
+    <form action="{{ url_for('main.comment') }}", method="POST">
+    <article class="media">
+      <figure class="media-left">
+        <p class="image is-64x64">
+          <img src="https://bulma.io/images/placeholders/128x128.png">
+        </p>
+      </figure>
+      <div class="media-content">
+        <div class="field">
+          <p class="control">
+                  <textarea class="textarea" type="text" id="body" name="body" rows="1" placeholder="Share your thoughts">
+                  </textarea>
+                  <input type="hidden" id="post_id" name="post_id" value= {{ post.id }}>
+                  
+          </p>
+        </div>
+        <div class="field">
+          <p class="control">
+              <button class="button is-primary is-light is-inverted" type="submit" >
+                  <span class="subtitle"></span>Post comment
+                </button>
+          </p>
+        </div>
+      </div>
+    </article>
+  </form>
+  {% endfor %}
