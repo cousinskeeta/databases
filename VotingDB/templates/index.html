@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+{% block body %}
+
+<div class="container">
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-header">
+                    <strong>
+                        <button class="btn btn-light btn-sm">
+                            <i class = "fas fa-arrow-up"></i>
+                        </button>
+                        10.5k
+                        <button class="btn btn-light btn-sm">
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
+                    </strong> r/Candidate <span class="text-muted" style="font-size: 10pt;"> Posted by u/BigBoss 10 hours ago</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Subscribe to BigBoss!</h5>
+                    <p class ="card-text">
+                        Candidate overview; values; and locations
+                        Representation on specific committees, etc.
+                    </p>
+                </div>
+                <div class="card-footer text-muted">
+                    <a href="" class="btn btn-light btn-sm"><i class="fas fa-comment"></i> 0 comments</a>
+                    <a href="" class="btn btn-light btn-sm"><i class="fas fa-share"></i> Share</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card">
+                    <div class = "card-body">
+                        <h5 class="card-title" > r/Popular</h5>
+                        <p class = "card-text">
+                            This is the most popular issues
+                        </p>
+                        <a href="{{ url_for('add_post') }}" class = "btn btn-primary btn-block">Create Post</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+{% endblock %}
