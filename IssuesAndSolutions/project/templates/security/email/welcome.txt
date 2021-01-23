@@ -1,5 +1,8 @@
 {{ _('Welcome %(email)s!', email=user.email) }}
 
+Thanks for signing up! We recommend starting by updating your profile, 
+and sharing three issues and solutions that you are passionate about!
+
 {% if security.confirmable %}
 {{ _('Please confirm your email through the link below:') }}
 
